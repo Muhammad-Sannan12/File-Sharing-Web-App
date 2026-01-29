@@ -57,10 +57,6 @@ function FileUpload({
         fileName: SelectedFile.name,
         uploaderId: currentUserId,
       });
-      //       socket.emit("upload-finished", {
-      //   roomId: room,
-      //   userId: currentUserId,
-      // });
     } catch (err) {
       console.error("Upload failed:", err);
     }
