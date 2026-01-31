@@ -202,11 +202,15 @@ function App() {
         [uploaderId]: percent,
       }));
     });
-    socket.current.on("file-uploaded", (file) => {
-      setDownloadMap((prev) => ({
-        ...prev,
-        [file.uploaderId]: file.fileUrl,
-      }));
+    socket.current.on("file-uploaded", (files) => {
+      if (files.length > 0) {
+        const uploaderId = files[0].uploaderId;
+
+        setDownloadMap((prev) => ({
+          ...prev,
+          [uploaderId]: files, // Store the entire array of objects
+        }));
+      }
     });
     socket.current.on("room-joined", (currRoomObject, room) => {
       setRoomCreated(true);

@@ -104,17 +104,21 @@ io.on("connection", (socket) => {
 
     io.to(room).emit("upload-progress", uploaderId, percent);
   });
-  socket.on("file-uploaded", ({ room, fileUrl, fileName, uploaderId }) => {
-    const fileId = nanoid(10);
-    const newFile = { fileUrl, fileName, uploaderId, fileId };
-
-    // SAVE to your roomData object
+  socket.on("file-uploaded", ({ room, fileUrls, uploaderId }) => {
     if (roomData[room]) {
-      roomData[room].files.push(newFile);
-    }
+      // Map incoming array to your room's internal file structure
+      const newFiles = fileUrls.map((f) => ({
+        fileUrl: f.url,
+        fileName: f.name,
+        uploaderId,
+        fileId: nanoid(10),
+      }));
 
-    // Tell everyone to hide the progress bar and show the Download Button
-    io.to(room).emit("file-uploaded", newFile);
+      roomData[room].files.push(...newFiles);
+
+      // Tell everyone to hide the progress bar and show the Download Button
+      io.to(room).emit("file-uploaded", newFiles);
+    }
   });
 });
 app.use(routes);
