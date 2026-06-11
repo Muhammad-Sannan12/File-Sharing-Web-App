@@ -3,6 +3,7 @@ import axios from "axios";
 import { Download, Upload, FileText } from "lucide-react";
 
 function FileUpload({
+  isActive,
   userId,
   socket,
   room,
@@ -15,7 +16,7 @@ function FileUpload({
   const isFileReady = Array.isArray(downloadLink) && downloadLink.length > 0;
   const [files, setFiles] = useState([]);
   const [showFileList, setShowFileList] = useState(false);
-
+console.log("isActive:", isActive);
   function handleFileChange(e) {
     const selectedFiles = Array.from(e.target.files);
     if (selectedFiles.length === 0) return;

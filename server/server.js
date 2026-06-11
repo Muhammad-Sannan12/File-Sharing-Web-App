@@ -57,6 +57,8 @@ io.on("connection", (socket) => {
         [userId]: {
           socketId: socket.id,
           userName,
+          isActive: true, // New: Tracks current status
+          lastSeen: Date.now(), // New: Records time of last activity
         },
       },
       // Add this field
@@ -118,6 +120,23 @@ io.on("connection", (socket) => {
 
       // Tell everyone to hide the progress bar and show the Download Button
       io.to(room).emit("file-uploaded", newFiles);
+    }
+  });
+  socket.on("leave-room", (roomId, userId) => {
+    if (roomData[roomId] && roomData[roomId].users[userId]) {
+      console.log("Processing leave-room for", userId, "from", roomId);
+
+      roomData[roomId].users[userId].isActive = false;
+      roomData[roomId].users[userId].lastSeen = Date.now();
+      roomData[roomId].users[userId].socketId = null;
+
+      console.log(`User ${userId} left room ${roomId}`);
+      io.to(roomId).emit("user-status-changed", {
+        userId: userId,
+        isActive: false,
+      });
+
+      socket.leave(roomId);
     }
   });
 });

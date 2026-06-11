@@ -48,6 +48,20 @@ function App() {
   const [showIdView, setShowIdView] = useState(false);
 
   //functions
+  const leaveRoom = () => {
+    console.log("Leaving room...");
+    const savedRoomId = localStorage.getItem("roomId");
+    const savedUserId = localStorage.getItem("userId");
+    socket.current.emit("leave-room", savedRoomId, savedUserId);
+    setRoomCreated(false);
+    setRoom("");
+    setRoomUsers({ room: "", users: {} });
+    setCurrentUserId(null);
+    setDownloadMap({});
+    setProgressMap({});
+    localStorage.removeItem("savedRoomId");
+    localStorage.removeItem("savedUserId");
+  };
   const handleCreateRoom = async () => {
     if (!currentUser.trim() || !roomName.trim()) {
       alert("Please fill in all fields");
@@ -223,6 +237,18 @@ function App() {
     socket.current.on("error", (message) => {
       alert(message);
     });
+    socket.current.on("user-status-changed", ({ userId, isActive }) => {
+      setRoomUsers((prev) => ({
+        ...prev,
+        users: {
+          ...prev.users,
+          [userId]: {
+            ...prev.users[userId],
+            isActive: isActive, // Updates the specific user
+          },
+        },
+      }));
+    });
     return () => socket.current.disconnect();
   }, []);
 
@@ -270,7 +296,7 @@ function App() {
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="pt-4">
+              <CardContent className="pt-4 ">
                 <div className="grid grid-cols-2 gap-3">
                   {Object.entries(roomUsers.users).map(([userId, user]) => (
                     <UploadSection
@@ -284,10 +310,20 @@ function App() {
                       upId={upId}
                       progressMap={progressMap}
                       downloadLink={downloadMap[userId]}
+                      isActive={user.isActive}
                     />
                   ))}
                 </div>
               </CardContent>
+              <div className=" text-center">
+                <button
+                  className="w-fit px-2 cursor-pointer py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md 
+              "
+                  onClick={leaveRoom}
+                >
+                  Leave Room
+                </button>
+              </div>
             </>
           )}
         </Card>

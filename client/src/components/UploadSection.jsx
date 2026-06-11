@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import FileUpload from "./FileUpload";
 export default function UploadSection({
+  isActive,
   socket,
   userName,
   userId,
@@ -25,6 +26,7 @@ export default function UploadSection({
           <p className="text-xs text-muted-foreground text-white">
             ID: {userId}
           </p>
+       {!isActive && <h2>offline</h2>} 
         </div>
 
         <FileUpload
@@ -36,6 +38,7 @@ export default function UploadSection({
           upId={upId}
           progressMap={progressMap}
           downloadLink={downloadLink}
+          isActive={isActive}
         />
       </CardContent>
     </Card>
