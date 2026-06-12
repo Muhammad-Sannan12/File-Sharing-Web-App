@@ -136,6 +136,3 @@ Client (React)
     ├── Socket.io ──────────► Real-time file event broadcasting
     │
     └── Supabase SDK ───────► File upload / download (cloud storage)
-
-
-This project is open source and available under the [MIT License](LICENSE).
