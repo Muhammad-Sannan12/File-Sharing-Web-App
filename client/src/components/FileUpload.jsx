@@ -30,7 +30,7 @@ console.log("isActive:", isActive);
     formData.append("room", currentUserId);
 
     try {
-      const res = await axios.post("http://localhost:3000/upload", formData, {
+      const res = await axios.post("https://file-sharing-web-app-production.up.railway.app/upload", formData, {
         onUploadProgress: (progressEvent) => {
           const percent = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total,
