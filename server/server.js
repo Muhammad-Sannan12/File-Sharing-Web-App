@@ -16,9 +16,10 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: process.env.CLIENT_URL,
-    methods: ["GET", "POST"]
-  }
+    methods: ["GET", "POST"],
+  },
 });
+console.log("CLIENT_URL:", process.env.CLIENT_URL);
 const roomData = {};
 
 const liveProgress = new Map();
@@ -144,6 +145,9 @@ io.on("connection", (socket) => {
   });
 });
 app.use(routes);
+app.get("/", (req, res) => {
+  res.send("Server is running");
+});
 httpServer.listen(PORT, () => {
   console.log("Server is connected");
 });
