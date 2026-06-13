@@ -102,8 +102,7 @@ function App() {
     setShowIdView(false); // This switches the view to the main room card
   };
 
-  useEffect(() => {
-    socket.current = io("http://localhost:3000");
+  useEffect(() => {socket.current = io("https://file-sharing-web-app-production.up.railway.app/");
 
     socket.current.on("connect", () => {
       const savedRoomId = localStorage.getItem("roomId");
@@ -317,7 +316,7 @@ function App() {
               </CardContent>
               <div className=" text-center">
                 <button
-                  className="w-fit px-2 cursor-pointer py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md 
+                  className="w-fit px-2 cursor-pointer py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md
               "
                   onClick={leaveRoom}
                 >
