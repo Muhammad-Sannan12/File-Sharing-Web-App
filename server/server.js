@@ -1,3 +1,23 @@
+process.on("uncaughtException", (err) => {
+  console.error("❌ UNCAUGHT EXCEPTION");
+  console.error(err);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ UNHANDLED REJECTION");
+  console.error(reason);
+});
+
+process.on("SIGTERM", () => {
+  console.log("⚠️ SIGTERM received");
+});
+
+process.on("SIGINT", () => {
+  console.log("⚠️ SIGINT received");
+});
+
+console.log("🚀 Server starting...");
+console.log("🕒", new Date().toISOString());
 const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
@@ -6,6 +26,7 @@ const { nanoid } = require("nanoid");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
 const routes = require("./routes");
+console.log("Loaded routes successfully");
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
@@ -24,6 +45,12 @@ const roomData = {};
 
 const liveProgress = new Map();
 io.on("connection", (socket) => {
+  console.log("🔗 Socket connected:", socket.id);
+
+  socket.on("disconnect", (reason) => {
+    console.log("❌ Socket disconnected:", socket.id);
+    console.log("Reason:", reason);
+  });
   socket.on("rejoin-room", ({ roomId, userId }) => {
     if (roomData[roomId] && roomData[roomId].users[userId]) {
       roomData[roomId].users[userId].socketId = socket.id;
@@ -144,11 +171,42 @@ io.on("connection", (socket) => {
     }
   });
 });
-app.use(routes);
-app.get("/", (req, res) => {
-  console.log("Health check hit");
-  res.status(200).send("Server is running");
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
 });
-httpServer.listen(PORT, () => {
-  console.log("Server is connected");
+
+app.get("/", (req, res) => {
+  console.log("🏥 Health check hit");
+
+  res.status(200).json({
+    success: true,
+    message: "Server is running",
+    port: PORT,
+    time: new Date().toISOString(),
+  });
+});
+
+app.get("/debug", (req, res) => {
+  console.log("🛠 Debug route hit");
+
+  res.json({
+    port: PORT,
+    clientUrl: process.env.CLIENT_URL,
+    nodeEnv: process.env.NODE_ENV,
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+  });
+});
+
+app.use(routes);
+
+setInterval(() => {
+  console.log(`💓 Alive | Uptime: ${Math.floor(process.uptime())}s`);
+}, 10000);
+
+httpServer.listen(PORT, "0.0.0.0", () => {
+  console.log("✅ Server listening");
+  console.log("🌍 Host: 0.0.0.0");
+  console.log("🔌 Port:", PORT);
 });
