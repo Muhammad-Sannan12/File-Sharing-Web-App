@@ -6,7 +6,7 @@ const { nanoid } = require("nanoid");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
 const routes = require("./routes");
-
+const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 
@@ -141,6 +141,6 @@ io.on("connection", (socket) => {
   });
 });
 app.use(routes);
-httpServer.listen(3000, () => {
+httpServer.listen(PORT, () => {
   console.log("Server is connected");
 });
