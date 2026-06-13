@@ -17,7 +17,7 @@ export default defineConfig({
   preview: {
     host: "0.0.0.0",
     port: 8080,
-    allowedHosts: ["disciplined-passion-production-2bf2.up.railway.app"],
+    allowedHosts: "all",
   },
   resolve: {
     alias: {
