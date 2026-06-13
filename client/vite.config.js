@@ -14,6 +14,11 @@ import { defineConfig } from "vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  preview: {
+    host: "0.0.0.0",
+    port: 8080,
+    allowedHosts: ["disciplined-passion-production-2bf2.up.railway.app"],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
