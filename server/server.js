@@ -146,7 +146,8 @@ io.on("connection", (socket) => {
 });
 app.use(routes);
 app.get("/", (req, res) => {
-  res.send("Server is running");
+  console.log("Health check hit");
+  res.status(200).send("Server is running");
 });
 httpServer.listen(PORT, () => {
   console.log("Server is connected");
